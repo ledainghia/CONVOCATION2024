@@ -6,13 +6,15 @@ import { ThemeProvider } from '@/providers/theme-provider';
 import MountedProvider from '@/providers/mounted.provider';
 import { Toaster } from '@/components/ui/toaster';
 import { Toaster as SonnerToaster } from '@/components/ui/sonner';
-const inter = Inter({ subsets: ['latin'] });
-// language
 import { getLangDir } from 'rtl-detect';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import DirectionProvider from '@/providers/direction-provider';
 import AuthProvider from '@/providers/auth.provider';
+import ClientQueryProvider from '@/providers/ClientQueryProvider';
+import URLProvider from '@/providers/URLProvider';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'Login',
@@ -21,22 +23,21 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: { locale },
-}: Readonly<{
-  children: React.ReactNode;
-  params: { locale: string };
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   const messages = await getMessages();
-  const direction = getLangDir(locale);
+  const direction = getLangDir('en');
+
   return (
-    <html lang={locale} dir={direction}>
+    <html lang='en' dir={direction}>
       <body className={`${inter.className} dashcode-app`}>
-        <NextIntlClientProvider messages={messages} locale={locale}>
+        <NextIntlClientProvider messages={messages} locale='en'>
           <AuthProvider>
             <ThemeProvider attribute='class' defaultTheme='light'>
               <MountedProvider>
                 <DirectionProvider direction={direction}>
-                  {children}
+                  <ClientQueryProvider>
+                    <URLProvider> {children}</URLProvider>
+                  </ClientQueryProvider>
                 </DirectionProvider>
               </MountedProvider>
               <Toaster />
