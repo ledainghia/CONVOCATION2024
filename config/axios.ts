@@ -31,3 +31,12 @@ export const loginAPI = {
     return await axios.post(BASE_URL + '/Auth/Login', user);
   },
 };
+
+export const ledAPI = {
+  getHallList: async () => {
+    return await axiosInstance.get('/Hall/GetAll');
+  },
+  getSessionList: async () => {
+    return await axiosInstance.get('/Session/GetAll');
+  },
+};

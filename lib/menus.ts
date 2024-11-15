@@ -51,15 +51,15 @@ export function getMenuList(pathname: string, t: any): Group[] {
       menus: [
         {
           id: 'MCController',
-          href: '/app/mc-controller',
+          href: '/led/mc-controller',
           label: 'MC Điều khiển',
           active: pathname.includes('/app/mc-controller'),
           icon: 'mdi:controller-right',
           submenus: [],
         },
         {
-          id: 'MCController',
-          href: '/app/mc-controller',
+          id: 'ledScreen',
+          href: '/led/led-screen',
           label: 'Trình chiếu LED',
           active: pathname.includes('/app/mc-controller'),
           icon: 'material-symbols-light:media-link-outline',
