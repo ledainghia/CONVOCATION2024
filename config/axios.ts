@@ -1,3 +1,4 @@
+import { Bachelor } from '@/dtos/BachelorDTO';
 import axios from 'axios';
 
 const BASE_URL =
@@ -15,7 +16,7 @@ axiosInstance.interceptors.request.use((config) => {
   if (accessToken) {
     // Thêm assetToken vào tiêu đề Authorization
     config.headers['Authorization'] = `Bearer ${accessToken}`;
-    config.timeout = 3000;
+    config.timeout = 10000;
   }
 
   return config;
@@ -52,5 +53,20 @@ export const testing = {
     const BASE_URL =
       localStorage.getItem('url') + '/api' || 'http://localhost:3000/api';
     return await axios.get(BASE_URL + '/Test/Connect');
+  },
+};
+
+export const checkinAPI = {
+  getBachelorList: async () => {
+    return await axiosInstance.get('/Bachelor/GetAll');
+  },
+};
+
+export const manageAPI = {
+  getBachelorList: async () => {
+    return await axiosInstance.get('/Bachelor/GetAll');
+  },
+  addBachelor: async (data: Bachelor[]) => {
+    return await axiosInstance.post('/Bachelor/Add', data);
   },
 };

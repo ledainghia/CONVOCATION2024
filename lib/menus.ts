@@ -104,10 +104,10 @@ export function getMenuList(pathname: string, t: any): Group[] {
       id: 'management',
       menus: [
         {
-          id: 'report',
-          href: '/app/report/total',
+          id: 'manage-bachelor',
+          href: '/manage/manage-bachelor',
           label: 'Quản lí danh sách TCN',
-          active: pathname.includes('/app/report'),
+          active: pathname.includes('/manage/manage-bachelor'),
           icon: 'lucide:user-cog',
           submenus: [],
         },

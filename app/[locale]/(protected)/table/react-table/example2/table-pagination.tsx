@@ -75,6 +75,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
       <div className='flex items-center gap-2 flex-none'>
         <Button
           variant='outline'
+          color='primary'
           size='icon'
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
@@ -103,6 +104,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
         {getPageRange().map((page, pageIndex) => (
           <Button
             key={`basic-data-table-${pageIndex}`}
+            color='primary'
             onClick={() => table.setPageIndex(page)}
             size='icon'
             className='w-8 h-8'
@@ -122,6 +124,7 @@ const TablePagination = ({ table }: DataTablePaginationProps) => {
         <Button
           variant='outline'
           size='icon'
+          color='primary'
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
           className='w-8 h-8'

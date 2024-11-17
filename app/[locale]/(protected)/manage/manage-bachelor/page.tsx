@@ -1,4 +1,5 @@
 'use client';
+
 import TableCustom from '@/components/table/table';
 import {
   Breadcrumb,
@@ -10,24 +11,36 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Separator } from '@/components/ui/separator';
+import { Switch } from '@/components/ui/switch';
 import { checkinAPI } from '@/config/axios';
 import { Bachelor } from '@/dtos/BachelorDTO';
+import { expectedHeaders } from '@/lib/constant';
+import { cn } from '@/lib/utils';
 import { Icon } from '@iconify/react/dist/iconify.js';
 import { useQuery } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
-import { Eye, SquarePen, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import * as XLSX from 'xlsx';
+import AddBachelorFromFile from './components/addBachelorFromFile';
 
 export default function Page() {
   const [bachelorList, setBachelorList] = useState<Bachelor[]>([]);
-  const { data: bachelorDT, error: bachelorDTEr } = useQuery({
+
+  const { data: bachelorDT } = useQuery({
     queryKey: ['bachelorList'],
     queryFn: () => {
       return checkinAPI.getBachelorList();
@@ -40,10 +53,21 @@ export default function Page() {
     }
   }, [bachelorDT]);
 
+  const handleDownloadTemplate = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet([expectedHeaders]);
+    XLSX.utils.book_append_sheet(wb, ws, 'TCN');
+    XLSX.writeFile(wb, 'data_mau.xlsx');
+  };
+
   const columns: ColumnDef<Bachelor[]>[] = [
     {
       accessorKey: 'id',
       header: 'ID',
+    },
+    {
+      accessorKey: 'image',
+      header: 'Image',
     },
     {
       accessorKey: 'fullName',
@@ -74,13 +98,23 @@ export default function Page() {
       header: 'Ghế phụ huynh',
     },
     {
-      accessorKey: 'checkIn',
-      header: 'checkin',
+      id: 'action',
+      header: 'Hành động',
 
       cell: ({ row }) => (
-        <p>
-          <Switch checked={row.getValue('checkIn')}></Switch>
-        </p>
+        <div className='flex gap-1'>
+          <Button variant='outline' color='primary' className='' size='icon'>
+            <Icon icon='line-md:edit-filled'></Icon>
+          </Button>
+          <Button
+            variant='outline'
+            color='destructive'
+            size='icon'
+            className=''
+          >
+            <Icon icon='material-symbols:delete-outline'></Icon>
+          </Button>
+        </div>
       ),
     },
   ];
@@ -96,7 +130,7 @@ export default function Page() {
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
-                <BreadcrumbPage>Checkin thủ công</BreadcrumbPage>
+                <BreadcrumbPage>Quản lí danh sách TCN</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -109,7 +143,35 @@ export default function Page() {
             title='Danh sách tân cử nhân'
             data={bachelorList}
             columns={columns}
-          ></TableCustom>
+            header={
+              <>
+                <div className='flex gap-2'>
+                  <Button
+                    variant='default'
+                    color='primary'
+                    className=''
+                    onClick={() => {
+                      console.log('click');
+                    }}
+                  >
+                    Thêm một TCN
+                  </Button>
+
+                  <AddBachelorFromFile />
+                  <Button
+                    variant='outline'
+                    color='primary'
+                    className=''
+                    onClick={() => {
+                      handleDownloadTemplate();
+                    }}
+                  >
+                    Tải file mẫu
+                  </Button>
+                </div>
+              </>
+            }
+          />
         </CardContent>
       </Card>
     </>

@@ -25,14 +25,23 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import TablePagination from '@/app/[locale]/(protected)/table/react-table/example2/table-pagination';
+import { cn } from '@/lib/utils';
 
 export type TableProps = {
   data: any[];
   columns: any[];
   title: string;
+  header?: React.ReactNode;
+  overflow?: boolean;
 };
 
-const TableCustom = ({ data, columns, title }: TableProps) => {
+const TableCustom = ({
+  data,
+  columns,
+  title,
+  header,
+  overflow,
+}: TableProps) => {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -82,6 +91,7 @@ const TableCustom = ({ data, columns, title }: TableProps) => {
             }
             className='max-w-sm'
           /> */}
+          {header}
         </div>
       </div>
 
@@ -102,7 +112,7 @@ const TableCustom = ({ data, columns, title }: TableProps) => {
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className={cn(overflow && 'overflow-scroll')}>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <React.Fragment key={row.id}>
