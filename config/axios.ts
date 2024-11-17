@@ -28,15 +28,29 @@ export type User = {
 
 export const loginAPI = {
   login: async (user: User) => {
+    const BASE_URL =
+      localStorage.getItem('url') + '/api' || 'http://localhost:3000/api';
     return await axios.post(BASE_URL + '/Auth/Login', user);
   },
 };
 
 export const ledAPI = {
   getHallList: async () => {
+    const BASE_URL =
+      localStorage.getItem('url') + '/api' || 'http://localhost:3000/api';
     return await axiosInstance.get('/Hall/GetAll');
   },
   getSessionList: async () => {
+    const BASE_URL =
+      localStorage.getItem('url') + '/api' || 'http://localhost:3000/api';
     return await axiosInstance.get('/Session/GetAll');
+  },
+};
+
+export const testing = {
+  connect: async () => {
+    const BASE_URL =
+      localStorage.getItem('url') + '/api' || 'http://localhost:3000/api';
+    return await axios.get(BASE_URL + '/Test/Connect');
   },
 };

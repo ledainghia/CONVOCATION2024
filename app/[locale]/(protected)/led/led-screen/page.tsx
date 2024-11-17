@@ -20,6 +20,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from '@/components/ui/drawer';
 import { Icon } from '@/components/ui/icon';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,6 +42,7 @@ import {
 } from '@/components/ui/select';
 import { ledAPI } from '@/config/axios';
 import { useQuery } from '@tanstack/react-query';
+import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 
 export default function LedScreen() {
@@ -87,6 +98,19 @@ export default function LedScreen() {
   }, [sessionData]);
 
   useEffect(() => {
+    const hall = window.localStorage.getItem('hall');
+    const session = window.localStorage.getItem('session');
+    console.log('hallx', hall);
+    console.log('sessionx', session);
+    if (session) {
+      setSession(session);
+    }
+    if (hall) {
+      setHall(hall);
+    }
+  }, []);
+
+  useEffect(() => {
     console.log('hall', hall);
     window.localStorage.setItem('hall', hall);
   }, [hall]);
@@ -95,6 +119,12 @@ export default function LedScreen() {
     console.log('session', session);
     window.localStorage.setItem('session', session);
   }, [session]);
+
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
+  const handleDoubleClick = () => {
+    setIsFullscreen(!isFullscreen);
+  };
 
   return (
     <>
@@ -186,13 +216,54 @@ export default function LedScreen() {
               </div>
               <DialogFooter>
                 <DialogClose>
-                  <Button type='submit'>Lưu</Button>
+                  <Button>Lưu</Button>
                 </DialogClose>
               </DialogFooter>
             </DialogContent>
           </Dialog>
+
+          <Alert variant='soft' color='primary' className='mt-3'>
+            <AlertDescription>
+              <Icon icon='gridicons:fullscreen' className='w-5 h-5' /> Để vào
+              chế độ fullscreen, hãy double-click vào hình ảnh bên dưới !
+            </AlertDescription>
+          </Alert>
         </CardContent>
       </Card>
+      {isFullscreen ? (
+        <div
+          className='absolute inset-0 z-[999999999] bg-black flex items-center justify-center'
+          onDoubleClick={handleDoubleClick} // Thoát fullscreen khi double-click
+        >
+          <Card className='w-[100vw] h-[100vh]'>
+            <CardContent className='p-0 w-[100vw] h-[100vh]'>
+              <Image
+                src='/images/all-img/CONVO_KH_01.png'
+                alt='Mô tả hình ảnh'
+                className='w-full h-full object-cover'
+                width={1920}
+                height={1080}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      ) : (
+        // Card bình thường
+        <Card
+          className='mt-3 animate-fade-up animate-duration-1000'
+          onDoubleClick={handleDoubleClick} // Bật fullscreen khi double-click
+        >
+          <CardContent className='p-3'>
+            <Image
+              src='/images/all-img/CONVO_KH_01.png'
+              alt='Mô tả hình ảnh'
+              className='w-full h-full object-cover'
+              width={1920}
+              height={1080}
+            />
+          </CardContent>
+        </Card>
+      )}
     </>
   );
 }

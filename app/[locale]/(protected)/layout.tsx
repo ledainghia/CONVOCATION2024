@@ -8,6 +8,8 @@ import { auth } from '@/lib/auth';
 import { redirect } from '@/components/navigation';
 import { useEffect } from 'react';
 import ProtectProvider from '@/providers/ProtectProvider';
+import { Toaster } from 'react-hot-toast';
+
 const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <LayoutProvider>
@@ -17,6 +19,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
         <ProtectProvider>{children}</ProtectProvider>
       </LayoutContentProvider>
       <DashCodeFooter />
+      <Toaster />
     </LayoutProvider>
   );
 };

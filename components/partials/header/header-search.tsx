@@ -25,13 +25,35 @@ import { Icon } from '@/components/ui/icon';
 import { useConfig } from '@/hooks/use-config';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { useMutation } from '@tanstack/react-query';
+import test from 'node:test';
+import { testing } from '@/config/axios';
+import toast from 'react-hot-toast';
+
 const HeaderSearch = () => {
   const [config] = useConfig();
   const [url, setUrl] = React.useState(
     window.localStorage.getItem('url') || ''
   );
+
+  const checkConnect = useMutation({
+    mutationFn: () => {
+      return testing.connect();
+    },
+    onSuccess: () => {
+      toast.success('Kết nối tới server thành công', {
+        position: 'top-right',
+      });
+    },
+    onError: () => {
+      toast.error('Kết nối tới server thất bại', {
+        position: 'top-right',
+      });
+    },
+  });
   const handleUpdate = () => {
     window.localStorage.setItem('url', url);
+    checkConnect.mutate();
   };
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +67,7 @@ const HeaderSearch = () => {
           type='button'
           className='flex items-center xl:text-sm text-lg xl:text-default-400 text-default-800 dark:text-default-700 gap-3'
         >
-          URL
+          Server
           <span className='inline-block '>{url}</span>
         </button>
       </DialogTrigger>
