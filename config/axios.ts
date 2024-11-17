@@ -60,6 +60,9 @@ export const checkinAPI = {
   getBachelorList: async () => {
     return await axiosInstance.get('/Bachelor/GetAll');
   },
+  checkin: async (data: any) => {
+    return await axiosInstance.put('/Checkin/UpdateCheckin', data);
+  },
 };
 
 export const manageAPI = {

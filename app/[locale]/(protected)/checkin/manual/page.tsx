@@ -20,12 +20,15 @@ import {
 import { checkinAPI } from '@/config/axios';
 import { Bachelor } from '@/dtos/BachelorDTO';
 import { Icon } from '@iconify/react/dist/iconify.js';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { ColumnDef } from '@tanstack/react-table';
 import { Eye, SquarePen, Trash2 } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import swal from 'sweetalert';
 
 export default function Page() {
+  const queryClient = useQueryClient();
   const [bachelorList, setBachelorList] = useState<Bachelor[]>([]);
   const { data: bachelorDT, error: bachelorDTEr } = useQuery({
     queryKey: ['bachelorList'],
@@ -39,6 +42,46 @@ export default function Page() {
       setBachelorList(bachelorDT.data.data);
     }
   }, [bachelorDT]);
+
+  const checkinAction = useMutation({
+    mutationFn: (data: any) => {
+      const nData = {
+        studentCode: data.studentCode,
+        checkIn: !data.checkIn,
+      };
+      return checkinAPI.checkin(nData);
+    },
+    onMutate: (data: any) => {
+      console.log('onMutate', data);
+    },
+    onError: (error) => {
+      toast.error(`Checkin thất bại`, {
+        duration: 3000,
+        position: 'top-right',
+      });
+    },
+    onSuccess: (data) => {
+      toast.success(`Checkin cho ${data.data.studentCode} thành công`, {
+        duration: 3000,
+        position: 'top-right',
+      });
+      queryClient.invalidateQueries({ queryKey: ['bachelorList'] });
+    },
+  });
+
+  const handleCheckin = (data: any) => {
+    swal({
+      title: `Checkin`,
+      text: `Bạn có muốn checkin cho tân cử nhân ${data.fullName} không?`,
+      icon: 'warning',
+      buttons: ['Không', 'Checkin'],
+      dangerMode: true,
+    }).then((value) => {
+      if (value) {
+        checkinAction.mutate(data);
+      }
+    });
+  };
 
   const columns: ColumnDef<Bachelor[]>[] = [
     {
@@ -79,7 +122,12 @@ export default function Page() {
 
       cell: ({ row }) => (
         <p>
-          <Switch checked={row.getValue('checkIn')}></Switch>
+          <Switch
+            checked={row.getValue('checkIn')}
+            onClick={() => {
+              handleCheckin(row.original);
+            }}
+          ></Switch>
         </p>
       ),
     },
